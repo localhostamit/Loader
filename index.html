@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Superman Ethereal Plasma Loader</title>
+  <title>Superman Bifrost Loader</title>
   <style>
     :root {
-      /* Master Size: Scale this up or down, the whole loader will scale proportionally */
-      --loader-size: 190px; 
+      /* Master Size: Change this to shrink or grow the entire loader */
+      --loader-size: 140px; 
     }
 
     body {
@@ -17,87 +17,108 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #030407; /* Deep OLED black */
+      background-color: #030407; 
       overflow: hidden;
     }
 
+    /* Container perfectly hugs the PNG dimensions */
     .loader-stage {
       position: relative;
       width: var(--loader-size);
-      height: var(--loader-size);
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: stage-breathe 3s ease-in-out infinite;
-    }
-
-    /* Ambient background atmosphere */
-    .loader-stage::before {
-      content: '';
-      position: absolute;
-      width: 55%;
-      height: 55%;
-      background: radial-gradient(circle, rgba(0, 88, 240, 0.25) 0%, rgba(252, 227, 0, 0.08) 60%, transparent 80%);
-      filter: blur(20px);
-    }
-
-    .plasma-svg {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      z-index: 2;
-      overflow: visible;
+      animation: hover-pulse 3s ease-in-out infinite;
     }
 
     .loading-logo {
-      position: absolute;
-      /* CRITICAL TWEAK: PNG files have invisible blank space around the 'S'. 
-        If the lights are too far away from the logo, raise '66%' to '70%'. 
-        If the lights clip into the red, drop it to '63%'.
-      */
-      width: 66%; 
+      width: 100%;
       height: auto;
+      display: block;
       z-index: 10;
-      filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.95));
-      transform: translateY(-2%); /* Micro-lifts the visual weight of the shield into the center */
+      filter: drop-shadow(0 4px 15px rgba(0,0,0,0.9));
     }
 
-    /* The Light Ribbon Master Class */
-    .wave-path {
+    /* SVG maps precisely over the image container */
+    .bifrost-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 12;
+      overflow: visible;
+      /* FINE-TUNING DIALS:
+         If the lights are slightly too small/big for your specific PNG's transparent padding, 
+         change scale(1.02) up or down (e.g., 0.98 or 1.05) to shrink-wrap it perfectly. 
+      */
+      transform: scale(1.02) translateY(1%); 
+    }
+
+    /* Base setup for all Bifrost strands */
+    .bifrost-strand {
       fill: none;
-      stroke-width: 1.6px;
       stroke-linecap: round;
       stroke-linejoin: round;
-      /* 95px beam length, 172px void = 267px exact mathematical perimeter */
-      stroke-dasharray: 95 172; 
+      /* 
+         The math here creates the "shattered wave" effect:
+         [tiny beam] [gap] [med beam] [gap] [tiny beam] ... [MASSIVE GAP]
+         Total perimeter of the polygon is roughly 305px.
+      */
+      animation: bifrost-flow 2s linear infinite;
     }
 
-    .path-blue {
-      stroke: url(#cyan-blue-purple);
-      filter: url(#super-bloom);
-      animation: orbit-cw 2.4s linear infinite;
+    /* Strand 1: Cyan / Blue */
+    .strand-1 {
+      stroke: #00f0ff;
+      stroke-width: 1.5px;
+      stroke-dasharray: 4 2 12 4 2 281;
+      filter: drop-shadow(0 0 4px #0058f0);
     }
 
-    .path-yellow {
-      stroke: url(#yellow-orange-pink);
-      filter: url(#super-bloom);
-      animation: orbit-ccw 2.4s linear infinite;
+    /* Strand 2: Purple / Magenta */
+    .strand-2 {
+      stroke: #d000ff;
+      stroke-width: 0.8px;
+      stroke-dasharray: 2 4 8 2 6 283;
+      animation-duration: 1.9s; /* Slightly faster to create internal wave shifting */
     }
 
-    /* Exactly locked to the 267px perimeter */
-    @keyframes orbit-cw {
-      0% { stroke-dashoffset: 267; }
+    /* Strand 3: Solar Yellow / Orange */
+    .strand-3 {
+      stroke: #fffb00;
+      stroke-width: 1px;
+      stroke-dasharray: 8 2 4 4 10 277;
+      filter: drop-shadow(0 0 6px #ff4800);
+      animation-duration: 2.1s;
+    }
+
+    /* Strand 4: White Hot Core */
+    .strand-4 {
+      stroke: #ffffff;
+      stroke-width: 1.8px;
+      stroke-dasharray: 2 1 4 2 2 294;
+      filter: drop-shadow(0 0 8px #ffffff);
+      animation-duration: 2s;
+    }
+
+    /* Strand 5: Trailing Pink Sparks */
+    .strand-5 {
+      stroke: #ff0066;
+      stroke-width: 0.5px;
+      stroke-dasharray: 1 6 2 8 1 287;
+      animation-duration: 2.2s;
+    }
+
+    /* 305 represents the full mathematical distance around the 5 points */
+    @keyframes bifrost-flow {
+      0% { stroke-dashoffset: 305; }
       100% { stroke-dashoffset: 0; }
     }
 
-    @keyframes orbit-ccw {
-      0% { stroke-dashoffset: -267; }
-      100% { stroke-dashoffset: 0; }
-    }
-
-    @keyframes stage-breathe {
+    @keyframes hover-pulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.025); }
+      50% { transform: scale(1.03); }
     }
   </style>
 </head>
@@ -105,42 +126,23 @@
 
   <div class="loader-stage">
     
-    <svg class="plasma-svg" viewBox="0 0 100 100">
-      <defs>
-        
-        <linearGradient id="cyan-blue-purple" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#00f0ff" />
-          <stop offset="50%" stop-color="#0058f0" />
-          <stop offset="100%" stop-color="#9d00ff" />
-        </linearGradient>
-
-        <linearGradient id="yellow-orange-pink" x1="100%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#fffb00" />
-          <stop offset="50%" stop-color="#ff4800" />
-          <stop offset="100%" stop-color="#ff0066" />
-        </linearGradient>
-
-        <filter id="super-bloom" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="1.2" result="tight_glow" />
-          <feGaussianBlur stdDeviation="3.5" result="wide_glow" />
-          <feMerge>
-            <feMergeNode in="wide_glow" />
-            <feMergeNode in="tight_glow" />
-            <feMergeNode in="SourceGraphic" /> </feMerge>
-        </filter>
-
-      </defs>
-
-      <polygon class="wave-path path-blue" points="6,20 94,20 98,36 50,91 2,36" />
-      <polygon class="wave-path path-yellow" points="6,20 94,20 98,36 50,91 2,36" />
-
-    </svg>
-
     <img 
       src="logo.png" 
       alt="Loading..." 
       class="loading-logo"
     >
+
+    <svg class="bifrost-svg" viewBox="0 0 100 100">
+      <!-- 
+        Standardized Superman Coordinates.
+        Top-Left(5,22) -> Top-Right(95,22) -> Right-Corner(99,40) -> Bottom-Tip(50,96) -> Left-Corner(1,40)
+      -->
+      <polygon class="bifrost-strand strand-1" points="5,22 95,22 99,40 50,96 1,40" />
+      <polygon class="bifrost-strand strand-2" points="5,22 95,22 99,40 50,96 1,40" />
+      <polygon class="bifrost-strand strand-3" points="5,22 95,22 99,40 50,96 1,40" />
+      <polygon class="bifrost-strand strand-4" points="5,22 95,22 99,40 50,96 1,40" />
+      <polygon class="bifrost-strand strand-5" points="5,22 95,22 99,40 50,96 1,40" />
+    </svg>
 
   </div>
 
