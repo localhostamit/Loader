@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Superman Shield Loader</title>
+  <style>
+    /* Centers the loader and applies a deep midnight-dark background */
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #0a0c10; 
+      overflow: hidden;
+    }
+
+    /* 
+      Wrapper holding both the lights and logo. 
+      The pulse animation is applied here so everything breathes together.
+    */
+    .loader-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* The SVG that draws the shape of the shield */
+    .shield-lights {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: visible; /* Prevents the glow from being clipped off */
+    }
+
+    /* Base styling for the traveling light beams */
+    .shield-lights polygon {
+      fill: none;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: miter; /* Keeps the corners sharp */
+    }
+
+    /* Blue Light Path */
+    .light-blue {
+      stroke: #0058f0;
+      filter: drop-shadow(0 0 10px #0058f0) drop-shadow(0 0 20px #0058f0);
+      /* 60px line, 220px gap (matches the total perimeter of the shape) */
+      stroke-dasharray: 60 220; 
+      animation: trace 2.5s linear infinite;
+    }
+
+    /* Yellow Light Path */
+    .light-yellow {
+      stroke: #fce300;
+      filter: drop-shadow(0 0 8px #fce300) drop-shadow(0 0 15px #fce300);
+      stroke-dasharray: 60 220;
+      /* The negative delay starts it halfway around the path */
+      animation: trace 2.5s linear infinite -1.25s; 
+    }
+
+    /* The Center Logo */
+    .loading-logo {
+      position: absolute;
+      width: 96px; /* Sized to fit perfectly inside the SVG outline */
+      height: auto;
+      z-index: 10;
+      filter: drop-shadow(0px 6px 12px rgba(0, 0, 0, 0.9));
+    }
+
+    /* Animations */
+    
+    /* Moves the dashes along the polygon path */
+    @keyframes trace {
+      0% { stroke-dashoffset: 280; } /* 280 roughly equals the polygon perimeter */
+      100% { stroke-dashoffset: 0; }
+    }
+
+    /* Soft breathing effect */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loader-container">
+    <!-- SVG mapped to the coordinates of a classic Superman Shield -->
+    <svg class="shield-lights" viewBox="0 0 100 100">
+      <!-- Blue moving light -->
+      <polygon class="light-blue" points="5,20 95,20 100,40 50,95 0,40" />
+      <!-- Yellow moving light -->
+      <polygon class="light-yellow" points="5,20 95,20 100,40 50,95 0,40" />
+    </svg>
+    
+    <!-- Using the exact file name provided -->
+    <img 
+      src="logo.png" 
+      alt="Loading..." 
+      class="loading-logo"
+    >
+  </div>
+
+</body>
+</html>
+
